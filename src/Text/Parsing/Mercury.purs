@@ -1,12 +1,24 @@
+-- | A PureScript wrapper for [Mercury Parser](https://github.com/postlight/mercury-parser) v2.2.0.
+-- |
+-- | Core features works reliably, namely [parse](#v:parse), and
+-- | [parseWithOptions](#v:parseWithOptions) with basic options changed.
+-- |
+-- | This package is still in early development so the API might change in drastic ways.
+-- |
+-- | See "wrapper implementation notes" in this documentation for information about implementation
+-- | details and functionality that has not been implemented or tested yet, in particular on
+-- | [ParserOptions](#t:ParserOptions), [CustomParser](#t:CustomParser), and
+-- | [ContentExtractor](#t:ContentExtractor).
 module Text.Parsing.Mercury
-  ( module Text.Parsing.Mercury.Types
-  , module Text.Parsing.Mercury
+  ( parse
+  , parseWithOptions
+  , defaultOptions
+  , module Text.Parsing.Mercury.Types
   ) where
 
 import Prelude
 
 import Control.Promise (toAffE)
-import Data.Argonaut.Core (Json)
 import Data.Argonaut.Decode (decodeJson)
 import Data.Argonaut.Encode (encodeJson)
 import Data.Either (Either(..))
@@ -17,31 +29,30 @@ import Effect.Aff (Aff, error, throwError)
 import Text.Parsing.Mercury.Types
 import Text.Parsing.Mercury.Foreign as FFI
 
--- | Run Mercury Parser using `defaultParseOptions`.
-parse :: Url -> Aff ParseResponse
+-- | Run Mercury Parser using [defaultOptions](#v:defaultOptions).
+parse :: Url -> Aff ParsedContent
 parse = parseWithOptions $ _ {html = Nothing}
 
 -- | Run Mercury Parser with some options changed.
 -- |
--- | Options are provide using annonymous record update syntax,
+-- | Options are provide using anonymous record update syntax,
 -- |
 -- | ```purescript
--- | parseWithOptions _ { contentType = Text, fallback = false } "https://example.com"
+-- | parseWithOptions
+-- |   _ { contentType = Text, fallback = false }
+-- |   "https://example.com"
 -- | ```
 -- |
--- | which is applied to `defaultParseOptions`.
-parseWithOptions :: (ParseOptions -> ParseOptions) -> Url -> Aff ParseResponse
+-- | which is applied to [defaultOptions](#v:defaultOptions) to generate and updated `Record` of
+-- | options.
+parseWithOptions :: (ParserOptions -> ParserOptions) -> Url -> Aff ParsedContent
 parseWithOptions ops url = do
-  res <- toAffE $ FFI.parse url (encodeJson $ ops defaultParseOptions)
-  case decodeResponse res of
+  res <- toAffE $ FFI.parse url (encodeJson $ ops defaultOptions)
+  case (decodeJson res) :: Either _ ParsedContent of
     Right x -> pure x
-    Left  _ -> case decodeError res of
+    Left  _ -> case (decodeJson res) :: Either _ MercuryError of
       Right err -> throwError $ error err.message
       Left _    -> throwError $ error "Could not parse output from Mercury Parser"
-
-  where
-    decodeResponse = decodeJson :: Json -> Either String ParseResponse
-    decodeError    = decodeJson :: Json -> Either String ErrorResponse
 
 -- | Default options used by Mercury Parser:
 -- |
@@ -54,8 +65,10 @@ parseWithOptions ops url = do
 -- | , customExtractor: Nothing
 -- | }
 -- | ```
-defaultParseOptions :: ParseOptions
-defaultParseOptions =
+-- |
+-- | For more information on what these options do see [ParserOptions](#t:ParserOptions).
+defaultOptions :: ParserOptions
+defaultOptions =
   { html: Nothing
   , fetchAllPages: true
   , fallback: true

@@ -1,5 +1,9 @@
-# PureScript Mercury Parser Wrapper
+# A PureScript Mercury Parser wrapper
 
-This is a WIP wrapper for the [Mercury Parser](https://github.com/postlight/mercury-parser).
+This is an early stage implementation of a PureScript wrapper for the [Mercury Parser](https://github.com/postlight/mercury-parser) v2.2.0.
 
-Basic parse request are working, along with requests using simple options. Requests with more advanced options like `customExtractor` have not been tested. Support for `extend` option, has not implemented yet.
+Basic functionality including parsing with basic options changed works reliably.
+
+Note that since package is still in early development so the API might change in drastic ways.
+
+See "wrapper implementation notes" in the documentation for information about implementation details and functionality that has not been implemented or tested yet, in particular on `ParserOptions`, `CustomParser`, and `ContentExtractor`.
