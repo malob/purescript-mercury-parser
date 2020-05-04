@@ -1,0 +1,14 @@
+{
+  "name": "purescript-mercury-parser",
+  "version": "0.1.0",
+  "description": "PureScript wrapper for Mercury Parser",
+  "repository": "https://github.com/malob/purescript-mercury-parser",
+  "author": "Malo Bourgon",
+  "license": "ISC",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "@postlight/mercury-parser": "^2.2.0"
+  }
+}

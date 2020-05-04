@@ -1,0 +1,24 @@
+{
+    "name": "purescript-mercury-parser",
+    "license": [
+        "ISC"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/malob/purescript-mercury-parser"
+    },
+    "ignore": [
+        "**/.*",
+        "node_modules",
+        "bower_components",
+        "output"
+    ],
+    "dependencies": {
+        "purescript-aff-promise": "^v2.1.0",
+        "purescript-argonaut-codecs": "^v6.0.2",
+        "purescript-argonaut-generic": "^v5.0.0",
+        "purescript-console": "^v4.4.0",
+        "purescript-effect": "^v2.0.1",
+        "purescript-maybe": "^v4.0.1"
+    }
+}
