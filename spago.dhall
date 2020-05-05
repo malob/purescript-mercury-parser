@@ -8,6 +8,7 @@
   , "console"
   , "effect"
   , "maybe"
+  , "spec"
   ]
 , packages = ./packages.dhall
 , sources = [ "src/**/*.purs", "test/**/*.purs" ]

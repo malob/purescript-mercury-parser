@@ -6,8 +6,8 @@
 -- | This package is still in early development so the API might change in drastic ways.
 -- |
 -- | See "wrapper implementation notes" in this documentation for information about implementation
--- | details and functionality that has not been implemented or tested yet, in particular on
--- | [ParserOptions](#t:ParserOptions), [CustomParser](#t:CustomParser), and
+-- | details and functionality that has not been implemented or properly tested yet, in particular
+-- | on [ParserOptions](#t:ParserOptions), [CustomParser](#t:CustomParser), and
 -- | [ContentExtractor](#t:ContentExtractor).
 module Text.Parsing.Mercury
   ( parse

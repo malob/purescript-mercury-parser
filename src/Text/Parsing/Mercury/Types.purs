@@ -183,8 +183,8 @@ type HeaderValue = String
 -- |
 -- | **Wrapper implementation note**
 -- |
--- | Although all the types are defined, using a custom parser has not been tested yet. Use at
--- | your own risk.
+-- | Although all the types are defined, and a test has been written to check that this works at all
+-- | , but more thorough is needed to explore edge cases, and more complex use cases.
 type CustomParser =
   { title          :: Maybe FieldExtractor
   , author         :: Maybe FieldExtractor
