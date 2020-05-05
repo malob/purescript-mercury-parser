@@ -17,6 +17,7 @@ module Text.Parsing.Mercury
   ) where
 
 import Prelude
+import Text.Parsing.Mercury.Types
 
 import Control.Promise (toAffE)
 import Data.Argonaut.Decode (decodeJson)
@@ -25,9 +26,9 @@ import Data.Either (Either(..))
 import Data.Map (empty)
 import Data.Maybe (Maybe(..))
 import Effect.Aff (Aff, error, throwError)
-
-import Text.Parsing.Mercury.Types
+import Record (rename)
 import Text.Parsing.Mercury.Foreign as FFI
+import Type.Prelude (SProxy(..))
 
 -- | Run Mercury Parser using [defaultOptions](#v:defaultOptions).
 parse :: Url -> Aff ParsedContent
@@ -50,9 +51,14 @@ parseWithOptions ops url = do
   res <- toAffE $ FFI.parse url (encodeJson $ ops defaultOptions)
   case (decodeJson res) :: Either _ ParsedContent of
     Right x -> pure x
-    Left  _ -> case (decodeJson res) :: Either _ MercuryError of
-      Right err -> throwError $ error err.message
-      Left _    -> throwError $ error "Could not parse output from Mercury Parser"
+    Left  _ -> case (fixLabel <$> decodeJson res) :: Either _ ParsedContent of
+      Right x -> pure x
+      Left  _ -> case (decodeJson res) :: Either _ MercuryError of
+        Right err -> throwError $ error err.message
+        Left _    -> throwError $ error "Could not parse output from Mercury Parser"
+
+  where
+    fixLabel = rename (SProxy :: SProxy "pages_rendered") (SProxy :: SProxy "rendered_pages")
 
 -- | Default options used by Mercury Parser:
 -- |
